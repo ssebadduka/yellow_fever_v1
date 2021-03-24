@@ -1,0 +1,122 @@
+<!-- Search functionality -->
+<html>
+    <head>
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+<style>
+    
+    /*!
+  Customs CSS stylesheet
+ */
+
+body {
+  background-color: #EEEEEE;
+}
+
+.layout-margin-8 {
+  margin: 3% 8%;
+}
+
+.card-img-top-custom {
+  width: 50%;
+  margin: 0 auto;
+}
+
+.card-title {
+  text-align: center;
+}
+
+.card-shadow {
+  -webkit-box-shadow: 0px 0px 28px 14px rgba(232,232,232,1);
+  -moz-box-shadow: 0px 0px 28px 14px rgba(232,232,232,1);
+  box-shadow: 0px 0px 28px 14px rgba(232,232,232,1);
+}
+
+.card-deck {
+  display: flex;
+  justify-content: space-around;
+  flex-flow: row wrap;
+  align-items: stretch;
+}
+
+.card {
+  padding: 3% 1.5%;
+  border: none;
+  max-width: 375px;
+  flex-grow: 1;
+}
+
+@media (min-width: 768px) {
+.form-control {
+  width: 500px !important;
+  height: 50px;
+}
+}
+
+.bg-blue {
+  background-color: #005EB8;
+}
+
+</style>
+</head>
+<body>
+<nav class="navbar navbar-light justify-content-center mt-4">
+    <form class="form-inline">
+        <button type="button" class="btn btn-primary btn-lg mr-3" id="btnSort">Sort</button>
+        <input class="form-control form-control-lg mr-sm-2" type="search" placeholder="Search By passport or nin_number" aria-label="Search" id="search">
+        <!-- <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button> -->
+    </form>
+    <div>
+      <a href="{% url 'login' %}">
+        <button type="button" class="btn btn-outline-primary">LogOut</button>
+    </a>
+    </div>
+   
+</nav>
+
+<!-- Cards -->
+<div class="layout-margin-8 mt-4">
+    <div class="card-deck">
+      {% for yellow in yellow %}  
+        <div class="card card-shadow text-center">
+            <div class="card-body">
+                <h4 class="card-title">{{yellow.passport_or_nin_number}}</h4>
+                <p class="card-text">{{yellow.first_name}} &nbsp;{{yellow.last_name}}</p>
+                <div class="dropdown-divider"></div>
+                <p class="card-text"><small class="text-muted"><strong>Issued On :</strong>{{yellow.issue_date}}</small></p>
+                <p class="card-text"><small class="text-muted"><strong>End On :</strong>{{yellow.end_date}}</small></p>
+                <p><img class="img-responsive img-blog " src="{{ yellow.photo.url }}"  alt="" width="100px" height="100px" /></p>
+                
+            </div>
+        </div>
+        
+        
+          
+        {% endfor %}
+        
+    </div>
+</div>
+
+</body>
+<script>
+    // this overrides `contains` to make it case insenstive
+jQuery.expr[':'].contains = function(a, i, m) {
+  return jQuery(a).text().toUpperCase()
+      .indexOf(m[3].toUpperCase()) >= 0;
+};
+
+$('#search').keyup(function (){
+    $('.card').removeClass('d-none');
+    var filter = $(this).val(); // get the value of the input, which we filter on
+    $('.card-deck').find('.card .card-body h4:not(:contains("'+filter+'"))').parent().parent().addClass('d-none');
+})
+
+$('#btnSort').click(function (){
+    $('.card-deck .card').sort(function(a,b) {
+        return $(a).find(".card-title").text() > $(b).find(".card-title").text() ? 1 : -1;
+    }).appendTo(".card-deck");
+})
+</script>
+</html>
